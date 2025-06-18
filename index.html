@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Talking Calculator</title>
+</head>
+<body>
+  <h1>🗣️ Talking Calculator</h1>
+  <input type="text" id="expression" placeholder="Type like 2+2" />
+  <button onclick="calculate()">Calculate & Speak</button>
+  <p id="result"></p>
+
+  <script>
+    function calculate() {
+      const input = document.getElementById("expression").value;
+      let result;
+
+      try {
+        result = eval(input);
+        document.getElementById("result").innerText = `Answer: ${result}`;
+
+        // Speak it!
+        const msg = new SpeechSynthesisUtterance("The answer is " + result);
+        speechSynthesis.speak(msg);
+      } catch (e) {
+        document.getElementById("result").innerText = "Oops! Invalid input!";
+        const errorMsg = new SpeechSynthesisUtterance("Oops! That doesn’t work!");
+        speechSynthesis.speak(errorMsg);
+      }
+    }
+  </script>
+</body>
+  </html>
