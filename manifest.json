@@ -6,6 +6,11 @@
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",
   "description": "A simple calculator that can talk!",
+  "id": "/",
+  "orientation": "portrait",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
   "icons": [
     {
       "src": "icon-192.png",
