@@ -4,10 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Talking Calculator</title>
-
-  <!-- PWA manifest -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4CAF50">
+  <link rel="icon" href="icon-192.png">
 
   <style>
     body {
@@ -86,14 +85,6 @@
       font-weight: bold;
     }
   </style>
-
-  <!-- 🛑 Login check BEFORE anything shows -->
-  <script>
-    if (!localStorage.getItem("loggedInUser")) {
-      // User not logged in → redirect to SparkLogin
-      window.location.href = "https://starryexplorers.github.io/SparkLogin/";
-    }
-  </script>
 </head>
 <body>
   <h1>🧮 Talking Calculator</h1>
@@ -130,34 +121,31 @@
 
   <p id="result"></p>
 
-  <!-- Service worker setup -->
   <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js').then(reg => {
-      reg.onupdatefound = () => {
-        const newWorker = reg.installing;
-        newWorker.onstatechange = () => {
-          if (newWorker.state === 'installed') {
-            if (navigator.serviceWorker.controller) {
-              const update = confirm("🔄 A new version is available. Do you want to update?");
-              if (update) {
-                newWorker.postMessage({ action: 'SKIP_WAITING' });
-                window.location.reload();
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').then(reg => {
+        reg.onupdatefound = () => {
+          const newWorker = reg.installing;
+          newWorker.onstatechange = () => {
+            if (newWorker.state === 'installed') {
+              if (navigator.serviceWorker.controller) {
+                const update = confirm("🔄 A new version is available. Do you want to update?");
+                if (update) {
+                  newWorker.postMessage({ action: 'SKIP_WAITING' });
+                  window.location.reload();
+                }
               }
             }
-          }
+          };
         };
-      };
-    });
+      });
 
-    // Listen to the message to skip waiting
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      console.log("🔥 Controller changed — app updated");
-    });
-  }
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        console.log("🔥 Controller changed — app updated");
+      });
+    }
   </script>
 
-  <!-- Calculator logic -->
   <script>
     function append(value) {
       document.getElementById('display').value += value;
@@ -175,6 +163,7 @@
 
       try {
         result = eval(input);
+        result = Math.round(result * 100) / 100; // optional: round to 2 decimals
         const message = `The answer is ${result}`;
         document.getElementById("result").innerText = message;
         document.getElementById("display").value = result;
